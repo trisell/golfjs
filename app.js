@@ -15,13 +15,13 @@ app.use(bodyParser.json());
 
 //The REST routes for "todos".
 app.route('/golf')
-  .get(listteamData)
-  .post(createteamData);
+  .post(createTeam)
+  .get(listTeams);
 
-app.route('/golf/:team')
+app.route('/golf/:id')
   .get(getTeamData)
-  .put(updateTeamData)
-  .delete(deleteTeamData);
+  .put(updateTeamData);
+//  .delete(deleteTeamData);
 
 //app.route('/teams/:team/:score')
 
@@ -36,7 +36,7 @@ app.use(handleError);
  * Retrieve all teams.
  */
 function listTeams(req, res, next) {
-  r.table('golfdata').orderBy({index: 'team'}).run(req.app._rdbConn, function(err, cursor) {
+  r.table('golfData').orderBy({index:'team'}).run(req.app._rdbConn, function(err, cursor) {
     if(err) {
       return next(err);
     }
@@ -61,7 +61,7 @@ function createTeam(req, res, next) {
 
   console.dir(teamData);
 
-  r.table('teams').insert(teamData, {returnChanges: true}).run(req.app._rdbConn, function(err, result) {
+  r.table('golfData').insert(teamData, {returnChanges: true}).run(req.app._rdbConn, function(err, result) {
     if(err) {
       return next(err);
     }
@@ -70,19 +70,19 @@ function createTeam(req, res, next) {
   });
 }
 
-/*
+/*g
  * Get a specific todo item.
  */
 function getTeamData(req, res, next) {
-  var teamDataName = req.params.team;
+  var teamDataId = req.params.team;
 
-  r.table('golfData').get(teamDataName).run(req.app._rdbConn, function(err, result) {
+  r.table('golfData').get(teamDataId).run(req.app._rdbConn, function(err, result) {
     if(err) {
       return next(err);
     }
 
     res.json(result);
-  });
+  }));
 }
 
 /*
